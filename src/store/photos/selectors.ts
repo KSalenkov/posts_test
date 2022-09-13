@@ -1,20 +1,16 @@
 import {RootState} from '../store';
 import { createSelector } from "@reduxjs/toolkit";
-import {Post} from "../../types/posts";
+import {Photo} from "../../types/photo";
 
-export const selectPostsRoot = (state: RootState) => state.posts;
+export const selectPhotosRoot = (state: RootState) => state.photos;
 
-export const selectPosts = createSelector([selectPostsRoot], (postsState) => postsState.data);
+export const selectPhotos = createSelector([selectPhotosRoot], (photosState) => photosState.data);
 
-export const selectUniqPosts = createSelector([selectPosts], (posts) => {
-  const uniqPosts: Record<number, Post> = {};
-  posts.forEach(post => {
-    if (!uniqPosts[post.userId]) {
-      uniqPosts[post.userId] = post;
-    }
-  });
-  return Object.values(uniqPosts)
-});
+const selectUserId = (_: RootState, userId: number) => userId;
+export const selectCurrentPhoto = createSelector(
+  [selectPhotos, selectUserId],
+  (photos, userId) => photos.find(photo => photo.albumId === userId)
+);
 
-export const selectLoading = createSelector([selectPostsRoot], (postsState) => postsState.loading);
-export const selectError = createSelector([selectPostsRoot], (postsState) => postsState.error);
+export const selectLoading = createSelector([selectPhotosRoot], (photosState) => photosState.loading);
+export const selectError = createSelector([selectPhotosRoot], (photosState) => photosState.error);

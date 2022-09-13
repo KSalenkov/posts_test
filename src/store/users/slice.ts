@@ -1,35 +1,49 @@
 import {createSlice} from '@reduxjs/toolkit';
-import type {PayloadAction} from '@reduxjs/toolkit';
-import {getUsers} from "./thunk"
+import {getUsers} from "./thunk";
+import {User} from "../../types/users"
 
 interface UsersState {
-  users: any[];
+  data: User[];
   loading: boolean;
   error: string | null;
 }
 
 const initialState: UsersState = {
-  users: [],
+  data: [],
   loading: false,
   error: null
 };
 
-export const tasksSlice = createSlice({
+export const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    reset: (state) => {
+      state.data = initialState.data;
+      state.loading = initialState.loading;
+      state.error = initialState.error;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getUsers.pending, (state) => {
         state.loading = true;
+        state.error = null;
+        state.data = [];
       })
       .addCase(getUsers.fulfilled, (state, {payload}) => {
         state.loading = false;
-        console.log("payload store", payload)
+        state.data = payload;
+      })
+      .addCase(getUsers.rejected, (state, {payload}) => {
+        state.loading = false;
+        if (payload) {
+          state.error = payload;
+        }
       })
   }
 });
 
-export const actions = tasksSlice.actions;
+export const actions = usersSlice.actions;
 
-export default tasksSlice.reducer;
+export default usersSlice.reducer;

@@ -1,14 +1,14 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api";
-import {RestApiError} from "../../api/restApi"
+import {User} from "../../types/users";
 
-export const getUsers = createAsyncThunk<any[]>(
+export const getUsers = createAsyncThunk<User[], undefined, { rejectValue: string }>(
   "@@users/getUsers",
-  async () => {
+  async (_, thunkApi) => {
     try {
-      return await api.get("/users");
+      return await api.get<User[]>("/users");
     } catch (error) {
-      return error;
+      return thunkApi.rejectWithValue("Something went wrong");
     }
   },
 );

@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api";
-import {Post} from "../../types/posts";
+import {Photo} from "../../types/photo";
 
-export const getPosts = createAsyncThunk<Post[], undefined, { rejectValue: string }>(
-  "@@posts/getPosts",
+export const getPhotos = createAsyncThunk<Photo[], undefined, { rejectValue: string }>(
+  "@@photos/getPhotos",
   async (_, thunkApi) => {
     try {
-      return await api.get<Post[]>("/posts");
+      return await api.get<Photo[]>("/photos");
     } catch (error) {
       return thunkApi.rejectWithValue("Something went wrong");
     }

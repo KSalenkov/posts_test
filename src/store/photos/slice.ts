@@ -1,34 +1,41 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {getPosts} from "./thunk";
-import {Post} from "../../types/posts"
+import {getPhotos} from "./thunk";
+import {Photo} from "../../types/photo"
+import {postsSlice} from "../posts/slice";
 
-interface PostsState {
-  data: Post[];
+interface PhotosState {
+  data: Photo[];
   loading: boolean;
   error: string | null;
 }
 
-const initialState: PostsState = {
+const initialState: PhotosState = {
   data: [],
   loading: false,
   error: null
 };
 
-export const postsSlice = createSlice({
-  name: 'posts',
+export const photosSlice = createSlice({
+  name: 'photos',
   initialState,
-  reducers: {},
+  reducers: {
+    reset: (state) => {
+      state.data = initialState.data;
+      state.loading = initialState.loading;
+      state.error = initialState.error;
+    }
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(getPosts.pending, (state) => {
+      .addCase(getPhotos.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getPosts.fulfilled, (state, {payload}) => {
+      .addCase(getPhotos.fulfilled, (state, {payload}) => {
         state.loading = false;
         state.data = payload;
       })
-      .addCase(getPosts.rejected, (state, {payload}) => {
+      .addCase(getPhotos.rejected, (state, {payload}) => {
         state.loading = false;
         if (payload) {
           state.error = payload;
@@ -37,4 +44,6 @@ export const postsSlice = createSlice({
   }
 });
 
-export default postsSlice.reducer;
+export const actions = photosSlice.actions;
+
+export default photosSlice.reducer;
